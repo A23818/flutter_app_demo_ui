@@ -1,90 +1,171 @@
 import 'package:flutter/material.dart';
-import 'DemoDidUpdateWidget.dart';
-import 'DemoDidChangeDependencies.dart';
+import 'package:flutter/semantics.dart';
+
 
 void main() => runApp(MyApp());
 
+//Demo1: su dung Inherited widget chia se data
+//Demo2: Inhertirted ben trong mot stateful widget
+
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter DNT Demo',
+      title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-        body: Demo1(),
-      ), //Chứa toàn bo UI o man hinfh
+        appBar: AppBar(
+          title: Text("Demo"),
+        ),
+        body: Scaffold(
+          body: DemoInheritedWidget(
+            child: MyContainer(
+              child: Counter(),
+            ),
+          ),
+        )
+      ),
     );
   }
 }
-class Demo1 extends StatefulWidget {
+//demo2
 
-  Demo1({Key key, this.title}) : super(key:key);
+class MyContainer extends StatefulWidget {
 
-  final String title;
+  Widget child;
+
+  MyContainer({this.child});
 
   @override
-  _Demo1State createState() => _Demo1State();
+  _MyContainerState createState() => _MyContainerState();
 }
 
-class _Demo1State extends State<Demo1> {
+class _MyContainerState extends State<MyContainer> {
 
-  int _counter = 0;
+  int data = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    print("initState");
+  increment(){
+    setState(() {
+      data++;
+    });
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    print("didChangeDependencies");
-  }
 
-  @override
-  void didUpdateWidget (Demo1 oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    print("didUpdateWidget");
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
-    print("dispose");
-  }
-
-  void _incrementCounter() {
-    //demo dispose
-    Navigator.pushReplacement(
-      context, 
-      MaterialPageRoute(builder: (context) => Demo2()),
-    );
-    // setState(() {
-    //   _counter++;
-    // });
-  }
 
   @override
   Widget build(BuildContext context) {
-    print("build");
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            '$_counter',
-            style: TextStyle(fontSize: 20),
-          ),
-          RaisedButton(
-            child: Text("Increment"),
-            onPressed: _incrementCounter,
-          )
-      ],)
+    return DemoInheritedWidget(
+      state: this,
+      child: widget.child,
     );
   }
 }
 
+
+class Counter extends StatefulWidget {
+  @override
+  _CounterState createState() => _CounterState();
+}
+
+class _CounterState extends State<Counter>
+{
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    DemoInheritedWidget demo = context.inheritFromWidgetOfExactType(DemoInheritedWidget);
+
+
+
+    return Center(
+      child: Container(
+        child: Column (children: <Widget>[
+          Text(demo.state.data.toString(), style: TextStyle(fontSize: 40)),
+          RaisedButton(onPressed: () {
+            demo.state.increment();
+          },
+            child: Text("Click"),
+          )
+        ],)
+      ),
+    );
+  }
+}
+
+class DemoInheritedWidget extends InheritedWidget {
+ 
+  Widget child;
+
+  _MyContainerState state;
+
+
+  DemoInheritedWidget({this.state, this.child});
+
+  @override
+  bool updateShouldNotify (DemoInheritedWidget old) {
+    return true;
+  }
+}
+//demo1
+class OngBa extends StatelessWidget {
+
+  // int count = 100;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ChaMe(),
+    );
+  }
+}
+
+// // demo1
+// class DemoInheritedWidget extends InheritedWidget {
+ 
+//   int count = 1000;
+
+//   DemoInheritedWidget({
+//     Widget child
+//   }) : super(child: child);
+
+//   @override
+//   bool updateShouldNotify (DemoInheritedWidget old) {
+//     return true;
+//   }
+// }
+
+
+
+
+class ChaMe extends StatelessWidget {
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ConGai(),
+    );
+  }
+}
+
+class ConGai extends StatelessWidget {
+
+ 
+  @override
+  Widget build(BuildContext context) {
+
+    DemoInheritedWidget demo = context.inheritFromWidgetOfExactType(DemoInheritedWidget);
+    return Center(
+      child: Container(
+        // child: Text(demo.count.toString(), style: TextStyle(fontSize: 30),),
+      )
+    );
+  }
+}
+
+//Demo2
