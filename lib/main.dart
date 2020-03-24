@@ -1,171 +1,60 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
 
-void main() => runApp(MyApp());
+main(List<String> args) {
+  //Nhung cach tao ra 1 stream
+  // Listener 1 stream
+  // Loai Stream single subscription or broadcast
+  // Stream transformer
 
-//Demo1: su dung Inherited widget chia se data
-//Demo2: Inhertirted ben trong mot stateful widget
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Demo"),
-        ),
-        body: Scaffold(
-          body: DemoInheritedWidget(
-            child: MyContainer(
-              child: Counter(),
-            ),
-          ),
-        )
-      ),
-    );
-  }
+  // var data = Future<int>.delayed(Duration(seconds: 1), () {return 100;});
+  // // Stream<int> stream = Stream<int>.fromFuture(data);
+
+  // Stream<int> stream = Stream<int>.fromFuture(data).asBroadcastStream();
+  // stream.listen((data) { 
+  //   print(data.toString());
+  // }, onDone: () {
+  //   print("done");
+  // });
+
+  // var data1 = Iterable<int>.generate(10, (value) {
+  //   return value*1000;
+  // });
+
+  // //Ktra dang timer
+  // Stream<int> stream2 = Stream.periodic(Duration(seconds: 1), (value) {
+  //   return value;
+  // })
+
+  // Single Subscription chi cho phep 1 client listener vao Stream. 
+  // Boradcast cho nhieu cung lissten
+
+
+  //Stream controller
+
+  StreamController<int> controller = StreamController<int>();
+
+  controller.stream.listen((data) {
+    print(data);
+  });
+
+  controller.sink.add(100);
+  controller.sink.add(200);
+
+  print("===========");
+
+  // Stream transformer
+  // Stream<int> stream = Stream.periodic(Duration(seconds: 1), (value) {
+  //   return value;
+  // })
+
+  // stream.transform(StreamTransformer.fromHandlers(handleData: (input, sink)))
+
+
+
+  // Stream Builder View Flutter
 }
-//demo2
-
-class MyContainer extends StatefulWidget {
-
-  Widget child;
-
-  MyContainer({this.child});
-
-  @override
-  _MyContainerState createState() => _MyContainerState();
-}
-
-class _MyContainerState extends State<MyContainer> {
-
-  int data = 0;
-
-  increment(){
-    setState(() {
-      data++;
-    });
-  }
-
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    return DemoInheritedWidget(
-      state: this,
-      child: widget.child,
-    );
-  }
-}
-
-
-class Counter extends StatefulWidget {
-  @override
-  _CounterState createState() => _CounterState();
-}
-
-class _CounterState extends State<Counter>
-{
-
-
-  @override
-  Widget build(BuildContext context) {
-
-    DemoInheritedWidget demo = context.inheritFromWidgetOfExactType(DemoInheritedWidget);
-
-
-
-    return Center(
-      child: Container(
-        child: Column (children: <Widget>[
-          Text(demo.state.data.toString(), style: TextStyle(fontSize: 40)),
-          RaisedButton(onPressed: () {
-            demo.state.increment();
-          },
-            child: Text("Click"),
-          )
-        ],)
-      ),
-    );
-  }
-}
-
-class DemoInheritedWidget extends InheritedWidget {
- 
-  Widget child;
-
-  _MyContainerState state;
-
-
-  DemoInheritedWidget({this.state, this.child});
-
-  @override
-  bool updateShouldNotify (DemoInheritedWidget old) {
-    return true;
-  }
-}
-//demo1
-class OngBa extends StatelessWidget {
-
-  // int count = 100;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: ChaMe(),
-    );
-  }
-}
-
-// // demo1
-// class DemoInheritedWidget extends InheritedWidget {
- 
-//   int count = 1000;
-
-//   DemoInheritedWidget({
-//     Widget child
-//   }) : super(child: child);
-
-//   @override
-//   bool updateShouldNotify (DemoInheritedWidget old) {
-//     return true;
-//   }
-// }
-
-
-
-
-class ChaMe extends StatelessWidget {
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: ConGai(),
-    );
-  }
-}
-
-class ConGai extends StatelessWidget {
-
- 
-  @override
-  Widget build(BuildContext context) {
-
-    DemoInheritedWidget demo = context.inheritFromWidgetOfExactType(DemoInheritedWidget);
-    return Center(
-      child: Container(
-        // child: Text(demo.count.toString(), style: TextStyle(fontSize: 30),),
-      )
-    );
-  }
-}
-
-//Demo2
